@@ -27,7 +27,14 @@ fun HomeScreen(navController: NavController) {
                 fontSize = MaterialTheme.typography.headlineMedium.fontSize,
                 fontWeight = FontWeight.Bold,
             )
-            TextButton(onClick = {navController.navigate(Screen.Detail.route)}) {
+            TextButton(onClick = {
+                navController.navigate(
+                    Screen.Detail.passNameAndId(
+                        5,
+                        "Sara"
+                    )
+                )
+            }) {
                 Text("Go to details")
             }
         }
