@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
@@ -15,9 +17,13 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -30,6 +36,7 @@ import com.fabiofpaulo.todolist.ui.components.FormDialog
 import com.fabiofpaulo.todolist.ui.components.RemoveDialog
 import com.fabiofpaulo.todolist.ui.components.TodoList
 import com.fabiofpaulo.todolist.ui.components.TodoTabs
+import java.util.UUID
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -41,11 +48,13 @@ fun MainLayout(
 
 
     val filteredItems by todoViewModel.filteredTodos.collectAsStateWithLifecycle()
+    val checkList by todoViewModel.checkList.collectAsStateWithLifecycle()
 
     val removeDialog by mainLayoutViewModel.removeDialog.collectAsStateWithLifecycle()
 
     val editDialog by mainLayoutViewModel.editDialog.collectAsStateWithLifecycle()
     val editDialogData by mainLayoutViewModel.editDialogData.collectAsStateWithLifecycle()
+
 
 
     Scaffold(modifier = modifier.fillMaxSize(), topBar = {
@@ -72,7 +81,21 @@ fun MainLayout(
                     .widthIn(max = 1000.dp),
             ) {
                 TodoTabs(
-                    onQuery = { todoViewModel.search(it) }
+                    onQuery = { todoViewModel.search(it) },
+                    actions = listOf(
+                        {
+                            if (checkList.isNotEmpty()){
+                                TextButton(
+                                    onClick = { todoViewModel.removeAll() },
+                                    colors = ButtonDefaults.textButtonColors(
+                                        contentColor = MaterialTheme.colorScheme.error
+                                    )
+                                ) {
+                                    Text("Remove All")
+                                }
+                            }
+                        }
+                    )
                 ) { selectedIndex ->
                     TodoList(
                         data = when (selectedIndex) {
@@ -86,6 +109,12 @@ fun MainLayout(
                         },
                         onRemove = { id ->
                             mainLayoutViewModel.openRemoveDialog(id)
+                        },
+                        onCheck = { id ->
+                            todoViewModel.toggleCheck(id)
+                        },
+                        checked = { id ->
+                            id in checkList
                         }
                     )
                 }
@@ -121,7 +150,7 @@ fun MainLayout(
                     mainLayoutViewModel.dismissEditDialog()
                 },
                 data = editDialogData
-                )
+            )
         }
 
         if (removeDialog != null) {

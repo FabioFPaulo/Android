@@ -18,12 +18,14 @@ import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CardElevation
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ChipColors
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -33,23 +35,49 @@ import com.fabiofpaulo.todolist.models.Todo
 import java.util.UUID
 
 @Composable
-fun TodoList(data: List<Todo>, onEdit: (id: UUID, data: Todo) -> Unit, onRemove: (id: UUID) -> Unit, modifier: Modifier = Modifier) {
+fun TodoList(
+    data: List<Todo>,
+    onEdit: (id: UUID, data: Todo) -> Unit,
+    onRemove: (id: UUID) -> Unit,
+    onCheck: (id: UUID) -> Unit,
+    modifier: Modifier = Modifier,
+    checked: (id: UUID) -> Boolean
+) {
     LazyColumn(
-        modifier = modifier.padding(top = 20.dp).fillMaxHeight(),
+        modifier = modifier
+            .padding(top = 20.dp)
+            .fillMaxHeight(),
         verticalArrangement = Arrangement.spacedBy(20.dp)
     ) {
-        items(data, key = { it.id }) {
-            ListCard(
-                label = it.label,
-                priority = it.priority,
-                status = it.status,
-                onRemove = {
-                    onRemove(it.id)
-                },
-                onEdit = {
-                    onEdit(it.id, it)
-                })
+        if (data.isEmpty()) {
+            item {
+                Row(
+                    horizontalArrangement = Arrangement.Center,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text("Nothing To Show")
+                }
+            }
+        } else {
+            items(data, key = { it.id }) {
+                ListCard(
+                    label = it.label,
+                    priority = it.priority,
+                    status = it.status,
+                    onRemove = {
+                        onRemove(it.id)
+                    },
+                    onEdit = {
+                        onEdit(it.id, it)
+                    },
+                    onCheck = {
+                        onCheck(it.id)
+                    },
+                    checked = checked(it.id)
+                )
+            }
         }
+
     }
 }
 
@@ -59,7 +87,9 @@ fun ListCard(
     priority: TodoPriority,
     status: TodoStatus,
     onRemove: () -> Unit,
-    onEdit: () -> Unit
+    onEdit: () -> Unit,
+    onCheck: () -> Unit,
+    checked: Boolean = false
 ) {
     Card(
         modifier = Modifier
@@ -76,16 +106,22 @@ fun ListCard(
     ) {
         Row(
             modifier = Modifier
-                .padding(vertical = 20.dp, horizontal = 30.dp)
-        ) {
+                .padding(vertical = 20.dp, horizontal = 30.dp),
+
+            ) {
             Column(
                 modifier = Modifier.weight(1f)
             ) {
-                Text(
-                    label,
-                    style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.primary
-                )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Checkbox(checked = checked, onCheckedChange = { onCheck() })
+                    Text(
+                        label,
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                }
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(3.dp)
                 ) {
