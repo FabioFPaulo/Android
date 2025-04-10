@@ -7,49 +7,27 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
-import com.fabiofpaulo.navigationbasics.navigation.AUTHENTICATION_ROUTE
 import com.fabiofpaulo.navigationbasics.navigation.Screen
 
 @Composable
-fun HomeScreen(navController: NavController) {
+fun SignUpScreen(navController: NavController) {
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         Column {
             Text(
-                "HOME",
+                "Register",
                 color = MaterialTheme.colorScheme.primary,
                 fontSize = MaterialTheme.typography.headlineMedium.fontSize,
                 fontWeight = FontWeight.Bold,
             )
             TextButton(onClick = {
-                navController.navigate(AUTHENTICATION_ROUTE)
+                navController.navigate(Screen.Login.route)
             }) {
-                Text("Logout")
-            }
-            TextButton(onClick = {
-                navController.navigate(
-                    Screen.Detail.passNameAndId(
-                        5,
-                        "Sara"
-                    )
-                )
-            }) {
-                Text("Go to details")
+                Text("Go to Login")
             }
         }
     }
-}
-
-@Composable
-@Preview(showBackground = true)
-fun HomeScreenPreview() {
-    HomeScreen(
-        navController = rememberNavController()
-    )
 }
