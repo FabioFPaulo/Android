@@ -6,7 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.fabiofpaulo.navigationbasics.navigation.navgraph.SetupNavGraph
+import com.fabiofpaulo.navigationbasics.navigation.navgraph.RootNavigationGraph
 import com.fabiofpaulo.navigationbasics.ui.theme.NavigationBasicsTheme
 
 class MainActivity : ComponentActivity() {
@@ -19,7 +19,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             NavigationBasicsTheme {
                 navController = rememberNavController()
-                SetupNavGraph(navController)
+                RootNavigationGraph(navController)
             }
         }
     }
