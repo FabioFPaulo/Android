@@ -63,7 +63,7 @@ private fun Content(state: MoviewDetailsState) {
     } else if (state.data != null) {
         Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
             AsyncImage(
-                model = state.data.background_path,
+                model = "https://image.tmdb.org/t/p/w500/${state.data.poster_path}",
                 contentDescription = null,
                 modifier = Modifier
                     .fillMaxWidth()

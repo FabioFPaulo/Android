@@ -71,7 +71,7 @@ private fun MyCard(data: Movie, onClick: () -> Unit) {
     ) {
         Column(modifier = Modifier.padding(vertical = 3.dp, horizontal = 5.dp)) {
             AsyncImage(
-                model = data.background_path,
+                model = "https://image.tmdb.org/t/p/w500/${data.poster_path}",
                 contentDescription = null,
                 modifier = Modifier
                     .fillMaxWidth()
